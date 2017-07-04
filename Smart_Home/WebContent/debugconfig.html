@@ -1,0 +1,108 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv=content-type content="text/html;charset=utf-8">
+<title>Forward to DebugConfig WebPage</title>
+</head>
+<body>
+<form name=loading>
+<P align=center><FONT face=Arial color=#0066ff size=2>loading...</FONT>
+<INPUT type="text" style="PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: bolder; 
+PADDING-BOTTOM: 0px; COLOR: #0066ff; BORDER-TOP-style: none; PADDING-TOP: 0px;
+ FONT-FAMILY: Arial; BORDER-RIGHT-style: none; BORDER-LEFT-style: none;
+ BACKGROUND-COLOR: white; BORDER-BOTTOM-style: none"
+size="46" id="chart" >
+<BR>
+<INPUT type="text" style="BORDER-RIGHT: medium none; BORDER-TOP: medium none;
+ BORDER-LEFT: medium none; COLOR: #0066ff; BORDER-BOTTOM: medium none;
+ TEXT-ALIGN: center" size="47" id="percent" >
+</P>
+</form>
+<script language="javascript">
+var bar=0;
+var per=0;
+var line="|";
+var amount="";
+createXMLHttpRequest();
+refresh();
+//count(0.2,0.2*87);
+var selfrefresh=true;
+//window.location = "./debugconfig?Refresh=Get";
+count2();
+function count2(){
+	if (!selfrefresh){return;}
+	per=per+1;
+   	amount =amount + line;
+    
+    //alert(percentage*100+"%"+"--"+number);
+    document.loading.chart.value=amount;
+    document.loading.percent.value=per+"%";
+   if (selfrefresh){
+	   //alert("count2");
+   		setTimeout("count2()",20);
+   }
+    
+}
+
+function count(percentage,number){
+	selfrefresh=false;
+    amount="";
+     for (var i=0;i<number;i++){
+    	amount =amount + line;
+     }
+     //alert(percentage*100+"%"+"--"+number);
+     document.getElementById("chart").value=amount;
+	 document.getElementById("percent").value=percentage*100+"%";
+    
+    //setTimeout("",20);
+	
+}
+
+
+
+var XMLHttpReq; 
+
+function createXMLHttpRequest() { 
+	if(window.XMLHttpRequest) { //Mozilla 浏览器 
+		XMLHttpReq = new XMLHttpRequest(); 
+	} 
+	else if (window.ActiveXObject) { // IE浏览器 
+		try { 
+			XMLHttpReq = new ActiveXObject("Msxml2.XMLHTTP"); 
+		} catch (e) { 
+			try { 
+				XMLHttpReq = new ActiveXObject("Microsoft.XMLHTTP"); 
+			} catch (e) {} 
+		}
+	} 
+}
+
+function refresh(){
+	
+	
+	var url="./debugconfig";
+	//var arg="user="+user.value+"&pass="+pass.value;
+	var arg="Refresh=Get";
+	XMLHttpReq.open("Post", url, true); 
+	XMLHttpReq.onreadystatechange = processResponse;
+	XMLHttpReq.setRequestHeader("Content-Type","application/x-www-form-urlencoded;"); 
+	XMLHttpReq.send(arg); 
+	
+}
+
+
+
+function processResponse() { 
+	count(XMLHttpReq.readyState/4,(XMLHttpReq.readyState/4)*87);
+	//document.write((XMLHttpReq.readyState/4)*100+"--"+(XMLHttpReq.readyState/4)*87);
+	//alert(XMLHttpReq.readyState/4+"--"+(XMLHttpReq.readyState/4)*87);
+	if (XMLHttpReq.readyState == 4) {
+		document.write(unescape(XMLHttpReq.responseText));
+		} 
+	
+} 
+</script>
+
+</body>
+</html>
